@@ -11,7 +11,7 @@ export default function HalamanUtama() {
   const [hasil, setHasil] = useState<HasilGeocoding[]>([]);
   const [sedangMemuat, setSedangMemuat] = useState(false);
   const [pesanError, setPesanError] = useState<string | null>(null);
-  const teksTertunda = useDebounce(teksCari, 500);
+  const teksTertunda = useDebounce(teksCari, 800);
   useEffect(() => {
     if (teksTertunda.trim().length === 0) {
       setHasil([]);
@@ -38,7 +38,9 @@ export default function HalamanUtama() {
       {sedangMemuat && <ActivityIndicator />}
       {pesanError && (
         <View>
-          <Text>{pesanError}</Text>
+          <Text accessibilityLabel="Pesan kesalahan: gagal mengambil data">
+            {pesanError}
+          </Text>
           <Button title="Coba Lagi" onPress={() => ambilData(teksTertunda)} />
         </View>
       )}
@@ -46,6 +48,7 @@ export default function HalamanUtama() {
         !pesanError &&
         teksTertunda.length > 0 &&
         hasil.length === 0 && <Text>Kota tidak ditemukan</Text>}
+      {hasil.length > 0 && <Text>Ditemukan {hasil.length} kota</Text>}
       {hasil.map((kota) => (
         <WeatherCard
           key={kota.id}
