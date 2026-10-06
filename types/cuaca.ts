@@ -11,7 +11,8 @@ export interface WeatherCardProps {
   suhu: number;
   tingkatAQI: TingkatAQI;
 }
-export interface laporanudara {
+
+export interface WeatherCardProps {
   kota: string;
   suhu: number;
   tingkatAQI: TingkatAQI;
