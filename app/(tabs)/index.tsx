@@ -1,5 +1,6 @@
-import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { ambilSemuaFavorit } from "@/services/favoritStorage";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
     Button,
@@ -24,6 +25,7 @@ import { HasilGeocoding } from "../../types/geocoding";
 import { DataCuacaLengkap, DataKualitasUdara } from "../../types/weather";
 export default function HalamanUtama() {
   const [pesanLokasi, setPesanLokasi] = useState<string | null>(null);
+  const [sudahFavorit, setSudahFavorit] = useState(false);
   const [teksCari, setTeksCari] = useState("");
   const [hasilPencarian, setHasilPencarian] = useState<HasilGeocoding[]>([]);
   const [kotaTerpilih, setKotaTerpilih] = useState<HasilGeocoding | null>(null);
@@ -44,6 +46,17 @@ export default function HalamanUtama() {
       .then(setHasilPencarian)
       .catch(() => setHasilPencarian([]));
   }, [teksTertunda]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!kotaTerpilih) {
+        setSudahFavorit(false);
+        return;
+      }
+      ambilSemuaFavorit().then((daftar) => {
+        setSudahFavorit(daftar.some((k) => k.id === kotaTerpilih.id));
+      });
+    }, [kotaTerpilih]),
+  );
   async function pilihKota(kota: HasilGeocoding) {
     setKotaTerpilih(kota);
     const idSaatIni = ++requestIdRef.current;
@@ -116,7 +129,8 @@ export default function HalamanUtama() {
             tingkatAQI={konversiTingkatAQI(kualitasUdara.indeksAQI)}
           />
           <Button
-            title="Tambahkan ke Favorit"
+            title={sudahFavorit ? "Sudah di Favorit" : "Tambahkan ke Favorit"}
+            disabled={sudahFavorit}
             onPress={() =>
               router.push({
                 pathname: "/tambah-favorit",

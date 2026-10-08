@@ -30,6 +30,7 @@ export default function TabRiwayat() {
   return (
     <SafeAreaView style={{ flex: 1, padding: 16, gap: 12 }}>
       <Text style={{ fontSize: 18, fontWeight: "bold" }}>Kota Favorit</Text>
+      <Text>Tersimpan {daftarFavorit.length} kota</Text>
       {daftarFavorit.length === 0 && <Text>Belum ada kota favorit</Text>}
       {daftarFavorit.map((kota) => (
         <View
