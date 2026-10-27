@@ -60,11 +60,12 @@ export async function ambilCache(
     disimpanPada: baris.disimpan_pada,
   };
 }
-export async function daftarKotaTersimpan(): Promise<RingkasanKotaTersimpan[]> {
+export async function daftarKotaTersimpan(limit = 20): Promise<RingkasanKotaTersimpan[]> {
   const db = await ambilDatabase();
   const semua = await db.getAllAsync<BarisRingkasan>(
     `SELECT kunci, kota_id, nama_kota, latitude, longitude, disimpan_pada
-FROM cache_cuaca ORDER BY disimpan_pada DESC LIMIT 5`,
+FROM cache_cuaca ORDER BY disimpan_pada DESC LIMIT ?`,
+    [limit],
   );
   return semua.map((b) => ({
     kunci: b.kunci,
@@ -82,8 +83,14 @@ export async function bersihkanCacheLama(batasUmurMs: number): Promise<void> {
     Date.now() - batasUmurMs,
   ]);
 }
+// Invalidation per item kota: hapus cache spesifik berdasarkan kunci
+export async function hapusCacheKota(kunci: string): Promise<void> {
+  const db = await ambilDatabase();
+  await db.runAsync("DELETE FROM cache_cuaca WHERE kunci = ?", [kunci]);
+}
 // Invalidation manual: kosongkan seluruh cache
 export async function hapusSemuaCache(): Promise<void> {
   const db = await ambilDatabase();
   await db.runAsync("DELETE FROM cache_cuaca");
 }
+
