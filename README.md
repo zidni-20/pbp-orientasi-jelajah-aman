@@ -48,3 +48,8 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Penjelasan Status Data dan Mode Offline
+
+Cache-segar adalah salinan data cuaca lokal yang umurnya masih di bawah ambang batas TTL (30 menit), sehingga dapat langsung digunakan tanpa perlu melakukan permintaan jaringan. Sebaliknya, cache-basi adalah data tersimpan yang umurnya telah melewati 30 menit dan hanya digunakan sebagai cadangan saat jaringan internet tidak dapat dihubungi. Pada skenario first-run offline, perangkat belum memiliki riwayat data tersimpan sama sekali di SQLite dan koneksi internet gagal, sehingga aplikasi menampilkan pesan error informatif disertai opsi Coba Lagi. Label status data sangat penting bagi pengguna untuk memberikan transparansi informasi secara jujur mengenai asal data cuaca serta kapan terakhir kali data tersebut diperbarui.
+
